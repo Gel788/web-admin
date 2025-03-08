@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление пользователями - The Pivo</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Боковое меню -->
+            <div class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <div class="text-center mb-4">
+                        <h2 class="text-light">The Pivo</h2>
+                        <p class="text-muted">Админ-панель</p>
+                    </div>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html">
+                                <i class="bi bi-speedometer2 me-2"></i>
+                                Дашборд
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="restaurants.html">
+                                <i class="bi bi-building me-2"></i>
+                                Рестораны
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="menu.html">
+                                <i class="bi bi-menu-button-wide me-2"></i>
+                                Меню
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="reservations.html">
+                                <i class="bi bi-calendar-check me-2"></i>
+                                Бронирования
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="users.html">
+                                <i class="bi bi-people me-2"></i>
+                                Пользователи
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="news.html">
+                                <i class="bi bi-newspaper me-2"></i>
+                                Новости
+                            </a>
+                        </li>
+                    </ul>
+                    <hr>
+                    <div class="dropdown pb-4 text-center">
+                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="https://github.com/mdo.png" alt="Admin" width="32" height="32" class="rounded-circle mx-auto">
+                            <span class="d-none d-sm-inline mx-1 text-light">Администратор</span>
+                        </a>
+                        <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser">
+                            <li><a class="dropdown-item" href="#">Настройки</a></li>
+                            <li><a class="dropdown-item" href="#">Профиль</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Выход</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Основное содержимое -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Управление пользователями</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                            <i class="bi bi-person-plus me-1"></i>
+                            Добавить пользователя
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Фильтры и поиск -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Фильтры</h6>
+                    </div>
+                    <div class="card-body">
+                        <form id="userFiltersForm">
+                            <div class="row g-3 align-items-end">
+                                <div class="col-md-3">
+                                    <label for="filterRole" class="form-label">Роль</label>
+                                    <select class="form-select" id="filterRole">
+                                        <option value="">Все роли</option>
+                                        <option value="admin">Администратор</option>
+                                        <option value="manager">Менеджер</option>
+                                        <option value="client">Клиент</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="filterStatus" class="form-label">Статус</label>
+                                    <select class="form-select" id="filterStatus">
+                                        <option value="">Все статусы</option>
+                                        <option value="active">Активен</option>
+                                        <option value="inactive">Неактивен</option>
+                                        <option value="blocked">Заблокирован</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="filterRegistration" class="form-label">Дата регистрации</label>
+                                    <select class="form-select" id="filterRegistration">
+                                        <option value="">Любая дата</option>
+                                        <option value="today">Сегодня</option>
+                                        <option value="week">За неделю</option>
+                                        <option value="month">За месяц</option>
+                                        <option value="year">За год</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        <i class="bi bi-filter me-1"></i> Применить фильтры
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Таблица пользователей -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Список пользователей</h6>
+                        <div class="dropdown no-arrow">
+                            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="bi bi-three-dots-vertical text-gray-400"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                aria-labelledby="dropdownMenuLink">
+                                <div class="dropdown-header">Экспорт:</div>
+                                <a class="dropdown-item" href="#"><i class="bi bi-file-earmark-excel me-1"></i> Excel</a>
+                                <a class="dropdown-item" href="#"><i class="bi bi-file-earmark-pdf me-1"></i> PDF</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#"><i class="bi bi-printer me-1"></i> Печать</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="usersTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>ФИО</th>
+                                        <th>Email</th>
+                                        <th>Телефон</th>
+                                        <th>Роль</th>
+                                        <th>Статус</th>
+                                        <th>Дата регистрации</th>
+                                        <th>Действия</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>user1</td>
+                                        <td>Иванов Иван Иванович</td>
+                                        <td>ivanov@example.com</td>
+                                        <td>+7 (999) 123-45-67</td>
+                                        <td><span class="badge bg-primary">Клиент</span></td>
+                                        <td><span class="badge bg-success">Активен</span></td>
+                                        <td>15.09.2023</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#viewUserModal"><i class="bi bi-eye"></i></button>
+                                            <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editUserModal"><i class="bi bi-pencil"></i></button>
+                                            <button class="btn btn-sm btn-danger btn-delete-user"><i class="bi bi-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>user2</td>
+                                        <td>Петров Петр Петрович</td>
+                                        <td>petrov@example.com</td>
+                                        <td>+7 (999) 234-56-78</td>
+                                        <td><span class="badge bg-primary">Клиент</span></td>
+                                        <td><span class="badge bg-success">Активен</span></td>
+                                        <td>20.09.2023</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#viewUserModal"><i class="bi bi-eye"></i></button>
+                                            <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editUserModal"><i class="bi bi-pencil"></i></button>
+                                            <button class="btn btn-sm btn-danger btn-delete-user"><i class="bi bi-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>admin1</td>
+                                        <td>Администратор Системы</td>
+                                        <td>admin@thepivo.ru</td>
+                                        <td>+7 (812) 555-55-55</td>
+                                        <td><span class="badge bg-danger">Администратор</span></td>
+                                        <td><span class="badge bg-success">Активен</span></td>
+                                        <td>01.01.2023</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#viewUserModal"><i class="bi bi-eye"></i></button>
+                                            <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editUserModal"><i class="bi bi-pencil"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>manager1</td>
+                                        <td>Менеджер Ресторана</td>
+                                        <td>manager@thepivo.ru</td>
+                                        <td>+7 (812) 666-66-66</td>
+                                        <td><span class="badge bg-info">Менеджер</span></td>
+                                        <td><span class="badge bg-success">Активен</span></td>
+                                        <td>05.01.2023</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#viewUserModal"><i class="bi bi-eye"></i></button>
+                                            <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editUserModal"><i class="bi bi-pencil"></i></button>
+                                            <button class="btn btn-sm btn-danger btn-delete-user"><i class="bi bi-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>user3</td>
+                                        <td>Сидоров Сидор Сидорович</td>
+                                        <td>sidorov@example.com</td>
+                                        <td>+7 (999) 345-67-89</td>
+                                        <td><span class="badge bg-primary">Клиент</span></td>
+                                        <td><span class="badge bg-danger">Заблокирован</span></td>
+                                        <td>25.09.2023</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#viewUserModal"><i class="bi bi-eye"></i></button>
+                                            <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editUserModal"><i class="bi bi-pencil"></i></button>
+                                            <button class="btn btn-sm btn-success btn-unblock-user"><i class="bi bi-unlock"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Модальное окно добавления пользователя -->
+    <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addUserModalLabel">Добавить нового пользователя</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addUserForm">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="userName" class="form-label">ФИО</label>
+                                <input type="text" class="form-control" id="userName" name="name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="userEmail" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="userEmail" name="email" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="userPhone" class="form-label">Телефон</label>
+                                <input type="tel" class="form-control" id="userPhone" name="phone">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="userBirthDate" class="form-label">Дата рождения</label>
+                                <input type="date" class="form-control" id="userBirthDate" name="birthDate">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="userRole" class="form-label">Роль</label>
+                                <select class="form-select" id="userRole" name="role" required>
+                                    <option value="client" selected>Клиент</option>
+                                    <option value="manager">Менеджер</option>
+                                    <option value="admin">Администратор</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="userStatus" class="form-label">Статус</label>
+                                <select class="form-select" id="userStatus" name="status" required>
+                                    <option value="active" selected>Активен</option>
+                                    <option value="inactive">Неактивен</option>
+                                    <option value="blocked">Заблокирован</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="userPassword" class="form-label">Пароль</label>
+                                <input type="password" class="form-control" id="userPassword" name="password" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="userPasswordConfirm" class="form-label">Подтверждение пароля</label>
+                                <input type="password" class="form-control" id="userPasswordConfirm" name="passwordConfirm" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="userAddress" class="form-label">Адрес</label>
+                            <textarea class="form-control" id="userAddress" name="address" rows="2"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="1" id="userNotifyRegistration" name="notify" checked>
+                                <label class="form-check-label" for="userNotifyRegistration">
+                                    Отправить пользователю уведомление о регистрации
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" form="addUserForm" class="btn btn-primary">Добавить пользователя</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно просмотра пользователя -->
+    <div class="modal fade" id="viewUserModal" tabindex="-1" aria-labelledby="viewUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewUserModalLabel">Информация о пользователе</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="border-bottom pb-2 mb-3">Основная информация</h6>
+                            <div class="mb-2 row">
+                                <div class="col-sm-4"><strong>ID:</strong></div>
+                                <div class="col-sm-8">user1</div>
+                            </div>
+                            <div class="mb-2 row">
+                                <div class="col-sm-4"><strong>ФИО:</strong></div>
+                                <div class="col-sm-8">Иванов Иван Иванович</div>
+                            </div>
+                            <div class="mb-2 row">
+                                <div class="col-sm-4"><strong>Email:</strong></div>
+                                <div class="col-sm-8">ivanov@example.com</div>
+                            </div>
+                            <div class="mb-2 row">
+                                <div class="col-sm-4"><strong>Телефон:</strong></div>
+                                <div class="col-sm-8">+7 (999) 123-45-67</div>
+                            </div>
+                            <div class="mb-2 row">
+                                <div class="col-sm-4"><strong>Дата рождения:</strong></div>
+                                <div class="col-sm-8">01.01.1990</div>
+                            </div>
+                            <div class="mb-2 row">
+                                <div class="col-sm-4"><strong>Адрес:</strong></div>
+                                <div class="col-sm-8">ул. Пушкина, д. 10, кв. 5</div>
+                            </div>
+                            <div class="mb-2 row">
+                                <div class="col-sm-4"><strong>Роль:</strong></div>
+                                <div class="col-sm-8"><span class="badge bg-primary">Клиент</span></div>
+                            </div>
+                            <div class="mb-2 row">
+                                <div class="col-sm-4"><strong>Статус:</strong></div>
+                                <div class="col-sm-8"><span class="badge bg-success">Активен</span></div>
+                            </div>
+                            <div class="mb-2 row">
+                                <div class="col-sm-4"><strong>Регистрация:</strong></div>
+                                <div class="col-sm-8">15.09.2023</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="border-bottom pb-2 mb-3">Статистика</h6>
+                            <div class="mb-2 row">
+                                <div class="col-sm-6"><strong>Количество бронирований:</strong></div>
+                                <div class="col-sm-6">5</div>
+                            </div>
+                            <div class="mb-2 row">
+                                <div class="col-sm-6"><strong>Общая сумма заказов:</strong></div>
+                                <div class="col-sm-6">15 500 ₽</div>
+                            </div>
+                            <div class="mb-2 row">
+                                <div class="col-sm-6"><strong>Последнее посещение:</strong></div>
+                                <div class="col-sm-6">25.09.2023</div>
+                            </div>
+                            <div class="mb-2 row">
+                                <div class="col-sm-6"><strong>Любимый ресторан:</strong></div>
+                                <div class="col-sm-6">The Pivo на Невском</div>
+                            </div>
+                            
+                            <h6 class="border-bottom pb-2 mb-3 mt-4">Уведомления</h6>
+                            <div class="mb-2 row">
+                                <div class="col-sm-6"><strong>Email уведомления:</strong></div>
+                                <div class="col-sm-6">Включены</div>
+                            </div>
+                            <div class="mb-2 row">
+                                <div class="col-sm-6"><strong>Push уведомления:</strong></div>
+                                <div class="col-sm-6">Включены</div>
+                            </div>
+                            <div class="mb-2 row">
+                                <div class="col-sm-6"><strong>SMS уведомления:</strong></div>
+                                <div class="col-sm-6">Отключены</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h6 class="border-bottom pb-2 mb-3 mt-4">Бронирования</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Ресторан</th>
+                                    <th>Дата и время</th>
+                                    <th>Гостей</th>
+                                    <th>Статус</th>
+                                    <th>Сумма</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>res123</td>
+                                    <td>The Pivo на Невском</td>
+                                    <td>12.10.2023, 19:00</td>
+                                    <td>4</td>
+                                    <td><span class="badge bg-warning">Ожидает подтверждения</span></td>
+                                    <td>1 000 ₽</td>
+                                </tr>
+                                <tr>
+                                    <td>res100</td>
+                                    <td>The Pivo на Невском</td>
+                                    <td>05.10.2023, 20:00</td>
+                                    <td>2</td>
+                                    <td><span class="badge bg-secondary">Завершено</span></td>
+                                    <td>500 ₽</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="d-flex justify-content-between w-100">
+                        <div>
+                            <button type="button" class="btn btn-danger">Заблокировать пользователя</button>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editUserModal">Редактировать</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="js/script.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Инициализация DataTables
+            $('#usersTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Russian.json'
+                }
+            });
+            
+            // Обработчик удаления пользователя
+            $('.btn-delete-user').on('click', function() {
+                const row = $(this).closest('tr');
+                const id = row.find('td:first').text();
+                const name = row.find('td:nth-child(2)').text();
+                
+                if (confirm(`Вы уверены, что хотите удалить пользователя "${name}" (ID: ${id})?`)) {
+                    // В реальном приложении здесь был бы API запрос
+                    row.remove();
+                    alert('Пользователь успешно удален.');
+                }
+            });
+            
+            // Обработчик разблокировки пользователя
+            $('.btn-unblock-user').on('click', function() {
+                const row = $(this).closest('tr');
+                const id = row.find('td:first').text();
+                const name = row.find('td:nth-child(2)').text();
+                
+                if (confirm(`Разблокировать пользователя "${name}" (ID: ${id})?`)) {
+                    // В реальном приложении здесь был бы API запрос
+                    row.find('td:nth-child(6)').html('<span class="badge bg-success">Активен</span>');
+                    
+                    // Заменяем кнопки
+                    const btnGroup = $(this).parent();
+                    btnGroup.html(
+                        '<button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#viewUserModal"><i class="bi bi-eye"></i></button> ' +
+                        '<button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editUserModal"><i class="bi bi-pencil"></i></button> ' +
+                        '<button class="btn btn-sm btn-danger btn-delete-user"><i class="bi bi-trash"></i></button>'
+                    );
+                    
+                    alert('Пользователь успешно разблокирован.');
+                }
+            });
+            
+            // Обработчик формы добавления пользователя
+            $('#addUserForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                // Проверка совпадения паролей
+                const password = $('#userPassword').val();
+                const confirmPassword = $('#userPasswordConfirm').val();
+                
+                if (password !== confirmPassword) {
+                    alert('Пароли не совпадают!');
+                    return;
+                }
+                
+                // В реальном приложении здесь был бы API запрос
+                alert('Пользователь успешно добавлен!');
+                
+                // Закрыть модальное окно
+                $('#addUserModal').modal('hide');
+            });
+            
+            // Обработчик для формы фильтров
+            $('#userFiltersForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                // В реальном приложении здесь был бы запрос к API для фильтрации данных
+                alert('Фильтры применены!');
+            });
+        });
+    </script>
+</body>
+</html> 
